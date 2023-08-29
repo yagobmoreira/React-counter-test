@@ -24,17 +24,18 @@ test('O número renderizado na página deve ser o mesmo valor do estado global',
 });
 
 test('Teste com o valor padrão do reducer e testar se o clique dos botões incrementa corretamente o valor do estado global.', async () => {
-  renderWithRedux(<App />);
-  const user = userEvent.setup();
+  const { user, store } = renderWithRedux(<App />);
   const btnAdd1 = screen.getByRole('button', { name: 'Incrementa 1' });
   const btnAdd5 = screen.getByRole('button', { name: 'Incrementa 5' });
   expect(screen.getByText('0')).toBeInTheDocument();
+  expect(store.getState().counterReducer.count).toBe(0);
 
   await user.click(btnAdd1);
   await user.click(btnAdd1);
   await user.click(btnAdd5);
 
   expect(screen.getByText('7')).toBeInTheDocument();
+  expect(store.getState().counterReducer.count).toBe(7);
 });
 
 test('Alterar o valor inicial do estado global count para 5 e testar se os botões incrementam corretamente o valor do estado global.', async () => {
@@ -43,16 +44,17 @@ test('Alterar o valor inicial do estado global count para 5 e testar se os botõ
       count: 5,
     },
   };
-  renderWithRedux(<App />, state);
+  const { user, store } = renderWithRedux(<App />, state);
 
-  const user = userEvent.setup();
   const btnAdd1 = screen.getByRole('button', { name: 'Incrementa 1' });
   const btnAdd5 = screen.getByRole('button', { name: 'Incrementa 5' });
   expect(screen.getByText('5')).toBeInTheDocument();
+  expect(store.getState().counterReducer.count).toBe(5);
 
   await user.click(btnAdd1);
   await user.click(btnAdd1);
   await user.click(btnAdd5);
 
   expect(screen.getByText('12')).toBeInTheDocument();
+  expect(store.getState().counterReducer.count).toBe(12);
 });
